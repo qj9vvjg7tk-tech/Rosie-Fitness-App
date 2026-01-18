@@ -1,4 +1,4 @@
- import streamlit as st
+import streamlit as st
 
 # 1. إعدادات الصفحة والاسم الجديد
 st.set_page_config(page_title="تطبيق الروز الرياضي", page_icon="🌹")
