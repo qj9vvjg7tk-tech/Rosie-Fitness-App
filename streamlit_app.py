@@ -1,6 +1,6 @@
 import streamlit as st
 
-# 1. إعدادات التصميم والاسم الأصلي
+# 1. إعدادات الاسم والتنسيق
 st.set_page_config(page_title="تطبيق الروز الرياضي", page_icon="🌹")
 
 st.markdown("""
@@ -8,67 +8,49 @@ st.markdown("""
     .stApp { background: linear-gradient(135deg, #fff5f8 0%, #f3e5f5 100%); }
     h1, h2, h3 { color: #d81b60 !important; text-align: center; }
     .stButton>button { background-color: #ff4b91; color: white; border-radius: 20px; width: 100%; }
-    .info-box { background-color: white; padding: 15px; border-radius: 15px; border-right: 5px solid #d81b60; margin-bottom: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
+# 2. واجهة التطبيق وصورة الفتاة الرياضية (التي طلبتِها)
 st.title("تطبيق الروز الرياضي 🌹")
-
-# 2. عداد الماء (كما في الصورة السابقة)
-st.header("💧 مراقب شرب الماء")
-if 'water_cups' not in st.session_state: st.session_state.water_cups = 0
-col1, col2 = st.columns([2, 1])
-with col1: st.subheader(f"الماء: {st.session_state.water_cups} / 12 كوب")
-with col2:
-    if st.button("➕ إضافة كوب"):
-        if st.session_state.water_cups < 12:
-            st.session_state.water_cups += 1
-            st.rerun()
+# هذه الصورة تعبر عن الرشاقة والأناقة الرياضية
+st.image("https://images.unsplash.com/photo-1518310383802-640c2de311b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80", caption="لياقة وأناقة مع الروز")
 
 st.write("---")
 
-# 3. جدول التمارين الأسبوعي والفيديوهات المتجددة
-st.header("📅 جدول التمارين الأسبوعي")
-day = st.selectbox("اختاري اليوم لعرض تمارينك:", ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"])
+# 3. جدول التمارين المتغير يومياً (روابط فيديوهات مختلفة)
+st.header("📅 جدول التمارين المتجدد")
+day = st.selectbox("اختاري اليوم:", ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"])
+num_vids = st.radio("كم فيديو تودين ممارسته اليوم؟", [1, 2, 3], horizontal=True)
 
-# قاعدة بيانات الفيديوهات لكل يوم (يمكنك تغيير الروابط لروابطك الخاصة)
-workout_db = {
+# قاعدة بيانات الفيديوهات (كل يوم له روابطه الخاصة)
+workout_links = {
     "السبت": ["https://www.youtube.com/watch?v=v7AYKMP6rOE", "https://www.youtube.com/watch?v=1f8yoFFdkBY", "https://www.youtube.com/watch?v=ML68QETssnU"],
     "الأحد": ["https://www.youtube.com/watch?v=8BcPHWG8pI0", "https://www.youtube.com/watch?v=X1T3p_69m5A", "https://www.youtube.com/watch?v=4pLUleLgzZ4"],
-    "الاثنين": ["https://www.youtube.com/watch?v=1f8yoFFdkBY", "https://www.youtube.com/watch?v=v7AYKMP6rOE", "https://www.youtube.com/watch?v=ML68QETssnU"],
-    "الثلاثاء": ["https://www.youtube.com/watch?v=4pLUleLgzZ4", "https://www.youtube.com/watch?v=8BcPHWG8pI0", "https://www.youtube.com/watch?v=X1T3p_69m5A"],
-    "الأربعاء": ["https://www.youtube.com/watch?v=ML68QETssnU", "https://www.youtube.com/watch?v=1f8yoFFdkBY", "https://www.youtube.com/watch?v=v7AYKMP6rOE"],
-    "الخميس": ["https://www.youtube.com/watch?v=X1T3p_69m5A", "https://www.youtube.com/watch?v=4pLUleLgzZ4", "https://www.youtube.com/watch?v=8BcPHWG8pI0"],
-    "الجمعة": ["https://www.youtube.com/watch?v=v7AYKMP6rOE", "https://www.youtube.com/watch?v=ML68QETssnU", "https://www.youtube.com/watch?v=1f8yoFFdkBY"]
+    "الاثنين": ["https://www.youtube.com/watch?v=kzdv496atj4", "https://www.youtube.com/watch?v=mGvzVjuY8SY", "https://www.youtube.com/watch?v=2MoGxae-zyo"],
+    "الثلاثاء": ["https://www.youtube.com/watch?v=v7AYKMP6rOE", "https://www.youtube.com/watch?v=ML68QETssnU", "https://www.youtube.com/watch?v=8BcPHWG8pI0"],
+    "الأربعاء": ["https://www.youtube.com/watch?v=X1T3p_69m5A", "https://www.youtube.com/watch?v=4pLUleLgzZ4", "https://www.youtube.com/watch?v=mGvzVjuY8SY"],
+    "الخميس": ["https://www.youtube.com/watch?v=2MoGxae-zyo", "https://www.youtube.com/watch?v=kzdv496atj4", "https://www.youtube.com/watch?v=v7AYKMP6rOE"],
+    "الجمعة": ["https://www.youtube.com/watch?v=8BcPHWG8pI0", "https://www.youtube.com/watch?v=X1T3p_69m5A", "https://www.youtube.com/watch?v=4pLUleLgzZ4"]
 }
 
-num_videos = st.radio("كم فيديو تودين ممارسته اليوم؟", [1, 2, 3], horizontal=True)
+selected_day_vids = workout_links[day]
 
 st.subheader(f"تمارين يوم {day} ✨")
-selected_videos = workout_db[day]
-for i in range(num_videos):
-    st.video(selected_videos[i])
+for i in range(num_vids):
+    st.video(selected_day_vids[i])
 
 st.write("---")
 
-# 4. الذكاء الاصطناعي والمستشار الذكي (ترشيح التمارين)
+# 4. المستشار الذكي (ترشيح بناءً على الحالة)
 st.header("🧠 مستشار الروز الذكي")
-st.write("أخبريني بحالتك الصحية أو هدفك اليوم وسأرشح لكِ ما يناسبك:")
-user_goal = st.text_input("مثلاً: أريد تمارين لآلام الظهر، أو تمارين حرق سريعة")
-if user_goal:
-    st.info(f"بناءً على طلبك '{user_goal}'، أرشح لكِ التركيز على الفيديو الأول اليوم مع زيادة شرب الماء.")
-
-st.write("---")
+user_input = st.text_input("صفي حالتك أو هدفك (مثال: أريد تمارين كارديو):")
+if user_input:
+    st.success(f"بناءً على طلبك لـ '{user_input}'، أرشح لكِ البدء بالفيديو الأول مع شرب كوب ماء إضافي.")
 
 # 5. الكاميرا والقياسات
 st.header("📸 الكاميرا والتحليل")
-cam_type = st.radio("نوع الكاميرا:", ["الأمامية", "الخلفية"], horizontal=True)
-st.camera_input("التقطي صورة لتحليل الوضعية")
+cam_side = st.radio("تبديل الكاميرا:", ["الأمامية", "الخلفية"], horizontal=True)
+st.camera_input("فتحي الكاميرا من هنا")
 
-weight = st.number_input("الوزن (كجم):", value=60.0)
-height = st.number_input("الطول (سم):", value=160.0)
-if st.button("تحليل مؤشر الجسم"):
-    bmi = weight / ((height/100)**2)
-    st.success(f"مؤشر كتلة جسمك: {bmi:.1f}")
-
-st.markdown("<p style='text-align: center; color: gray;'>جميع الحقوق محفوظة - تطبيق الروز الرياضي 2026</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>جميع الحقوق محفوظة - تطبيق الروز الرياضي 2026</p>", unsafe_allow_html=True)
