@@ -1,45 +1,48 @@
 import streamlit as st
 
-# 1. إعدادات الصفحة والاسم الجديد
+# 1. إعدادات الصفحة والألوان (الروز والبنفسجي)
 st.set_page_config(page_title="تطبيق الروز الرياضي", page_icon="🌹")
 
-# 2. تغيير الخلفية لواجهة رسومية (متدرجة الألوان) تدل على النشاط
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(to right, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+        background: linear-gradient(135deg, #fff5f8 0%, #f3e5f5 100%);
     }
-    h1 {
-        color: #d11141;
-        text-align: center;
-        font-family: 'Arial';
-    }
+    h1, h2, h3 { color: #d81b60 !important; text-align: center; }
+    .stButton>button { background-color: #d81b60; color: white; border-radius: 20px; width: 100%; }
     </style>
     """, unsafe_allow_html=True)
 
-# الاسم الجديد
+# 2. واجهة التطبيق والصورة التي طلبتِها
 st.title("تطبيق الروز الرياضي 🌹")
 
-# 3. حل مشكلة الصورة (استخدام رابط مباشر وموثوق)
-st.image("https://img.freepik.com/free-vector/fitness-stats-concept-illustration_114360-5125.jpg", 
-         caption="انطلقي مع الروز نحو حياة صحية")
+# صورة تعبيرية للياقة البدنية (تشبه طلبك)
+st.image("https://images.unsplash.com/photo-1518310383802-640c2de311b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80", caption="لياقة وأناقة مع الروز")
 
-# رادار الأهداف
-st.subheader("📊 رادار الأهداف والقياسات")
+st.write("---")
+
+# 3. قسم الكاميرا
+st.header("📸 مدرب الكاميرا الذكي")
+st.camera_input("التقطي صورة لوضعية تمرينك")
+
+# 4. قسم القياسات (الطول والوزن)
+st.header("⚖️ حساب مؤشر الكتلة (BMI)")
 col1, col2 = st.columns(2)
 with col1:
-    weight = st.number_input("وزنك الحالي (كجم)", value=65.0)
+    weight = st.number_input("الوزن (كجم)", min_value=30.0, max_value=200.0, value=60.0)
 with col2:
-    target = st.number_input("هدفك (كجم)", value=55.0)
+    height = st.number_input("الطول (سم)", min_value=100.0, max_value=250.0, value=160.0)
 
-diff = weight - target
-if diff > 0:
-    st.info(f"متبقي لكِ {diff:.1f} كجم للوصول للهدف. استمري!")
+if st.button("احسبي المؤشر الآن"):
+    bmi = weight / ((height/100)**2)
+    st.success(f"مؤشر كتلة جسمك هو: {bmi:.1f}")
 
-# مستشار الروز الذكي
-st.subheader("🧠 مستشار الروز الذكي")
-user_input = st.text_input("ما هي خطتك أو تمرينك اليوم؟")
+# 5. قسم الفيديوهات (الروابط)
+st.header("🎥 تمارين مختارة")
+st.video("https://www.youtube.com/watch?v=v7AYKMP6rOE")
 
-if user_input:
-    st.write("💡 نصيحة الروز: شرب الماء قبل التمرين بـ 30 دقيقة يحسن أداءك.")
-    st.video("https://www.youtube.com/watch?v=1f8yoFFdkBY")
+st.write("---")
+st.subheader("مستشار الروز الذكي 🧠")
+user_query = st.text_input("اسألي الروز أي سؤال رياضي:")
+
+st.markdown("<p style='text-align: center;'>جميع الحقوق محفوظة - تطبيق الروز 2024</p>", unsafe_allow_html=True)
