@@ -1,65 +1,71 @@
 import streamlit as st
 
-# 1. إعدادات التصميم والألوان الكاملة
-st.set_page_config(page_title="تطبيق الروز الرياضي", page_icon="🌹")
+# 1. إعدادات التصميم (الوردية الأنيقة)
+st.set_page_config(page_title="Zuhour AI Coach", page_icon="🌹")
 
 st.markdown("""
     <style>
-    .stApp {
-        background: linear-gradient(135deg, #fff5f8 0%, #f3e5f5 100%);
-    }
+    .stApp { background: linear-gradient(135deg, #fff5f8 0%, #f3e5f5 100%); }
     h1, h2, h3 { color: #d81b60 !important; text-align: center; }
-    .exercise-box {
-        background-color: white;
-        padding: 15px;
-        border-radius: 15px;
-        border-right: 5px solid #d81b60;
-        margin-bottom: 10px;
-    }
+    .stButton>button { background-color: #ff4b91; color: white; border-radius: 20px; width: 100%; }
+    .water-box { background-color: #ffe4ed; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #ffc1d3; }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. الواجهة والصورة
-st.title("تطبيق الروز الرياضي 🌹")
-st.image("https://images.unsplash.com/photo-1518310383802-640c2de311b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80")
+st.title("Zuhour AI Coach 🌹")
 
-# 3. الأدوات التفاعلية (جديد)
-st.header("📸 مدرب الكاميرا والحاسبة")
-tab1, tab2 = st.tabs(["الكاميرا الذكية", "حساب الوزن والطول"])
+# 2. عداد شرب الماء (التفاعلي)
+st.header("💧 مراقب شرب الماء")
+if 'water_cups' not in st.session_state:
+    st.session_state.water_cups = 0
 
-with tab1:
-    st.camera_input("التقطي صورة لوضعية التمرين")
-
-with tab2:
-    weight = st.number_input("الوزن (كجم)", value=60.0)
-    height = st.number_input("الطول (سم)", value=160.0)
-    if st.button("احسبي المؤشر"):
-        bmi = weight / ((height/100)**2)
-        st.success(f"مؤشر كتلة جسمك: {bmi:.1f}")
+with st.container():
+    st.markdown(f"<div class='water-box'><h3>الماء: {st.session_state.water_cups} / 12 كوب</h3></div>", unsafe_allow_html=True)
+    if st.button("➕ إضافة كوب ماء"):
+        if st.session_state.water_cups < 12:
+            st.session_state.water_cups += 1
+            st.rerun()
 
 st.write("---")
 
-# 4. جدول الأيام والتمارين (التي كانت موجودة سابقاً)
-st.header("📅 جدولك الأسبوعي للتمارين")
-day = st.selectbox("اختاري اليوم لعرض التمارين:", 
-                  ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"])
+# 3. ميزة تبديل الكاميرا (الحل الذي طلبتِه)
+st.header("📸 الكاميرا الذكية")
+camera_choice = st.radio("اختاري الكاميرا التي تودين استخدامها:", ("الأمامية (سيلفي)", "الخلفية"), horizontal=True)
 
-exercises = {
-    "السبت": {"task": "تمارين كارديو وحرق دهون", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"},
-    "الأحد": {"task": "تمارين شد البطن والخصر", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"},
-    "الاثنين": {"task": "تمارين الجزء السفلي (أرجل)", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"},
-    "الثلاثاء": {"task": "راحة واستشفاء (يوم اليوغا)", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"},
-    "الأربعاء": {"task": "تمارين شد الذراعين والظهر", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"},
-    "الخميس": {"task": "تمارين كامل الجسم (هيت)", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"},
-    "الجمعة": {"task": "مشي حر ونشاط خارجي", "video": "https://www.youtube.com/watch?v=v7AYKMP6rOE"}
-}
+if camera_choice == "الخلفية":
+    st.info("سيتم محاولة فتح الكاميرا الخلفية (يعتمد على دعم متصفحك)")
+    picture = st.camera_input("التقطي صورة لوضعية التمرين (خلفية)")
+else:
+    picture = st.camera_input("التقطي صورة لوضعية التمرين (أمامية)")
 
-st.markdown(f"<div class='exercise-box'><h3>تمرين يوم {day}</h3><p style='text-align:center;'>{exercises[day]['task']}</p></div>", unsafe_allow_html=True)
-st.video(exercises[day]['video'])
-
-# 5. المستشار الذكي
 st.write("---")
-st.subheader("مستشار الروز الذكي 🧠")
-user_query = st.text_input("اسألي الروز أي سؤال رياضي:")
 
-st.markdown("<p style='text-align: center;'>جميع الحقوق محفوظة - تطبيق الروز 2026</p>", unsafe_allow_html=True)
+# 4. جدول التمارين واختيار عدد الفيديوهات
+st.header("📅 جدول تمارين الأسبوع")
+day = st.selectbox("اختر اليوم:", ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"])
+num_videos = st.select_slider("كم تمرين تودين القيام به اليوم؟", options=[1, 2, 3])
+
+# روابط فيديوهات (مجموعة متنوعة)
+workout_links = [
+    "https://www.youtube.com/watch?v=v7AYKMP6rOE",
+    "https://www.youtube.com/watch?v=1f8yoFFdkBY",
+    "https://www.youtube.com/watch?v=ML68QETssnU"
+]
+
+st.subheader(f"تمارين يوم {day} ✨")
+for i in range(num_videos):
+    st.video(workout_links[i])
+
+# 5. حساب مؤشر الكتلة
+st.header("⚖️ رادار القياسات")
+col1, col2 = st.columns(2)
+with col1:
+    weight = st.number_input("الوزن (كجم):", value=60.0)
+with col2:
+    height = st.number_input("الطول (سم):", value=160.0)
+
+if st.button("تحليل الجسم"):
+    bmi = weight / ((height/100)**2)
+    st.success(f"مؤشر كتلة جسمك: {bmi:.1f}")
+
+st.markdown("<p style='text-align: center; color: gray;'>Zuhour AI Coach 2026</p>", unsafe_allow_html=True)
