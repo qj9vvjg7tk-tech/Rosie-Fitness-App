@@ -1,50 +1,84 @@
 import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-import re
-import random
 
-# --- 1. الإعدادات الأساسية ---
-st.set_page_config(page_title="Rosie Elite 2026", layout="wide")
+# 1. إعداد الصفحة - يجب أن يكون أول سطر في الكود
+st.set_page_config(
+    page_title="Rosie Elite 2026",
+    page_icon="💎",
+    layout="wide"
+)
 
-# --- 2. القائمة الجانبية ---
+# 2. تصميم القائمة الجانبية
 with st.sidebar:
     st.title("💎 Rosie Elite")
-    menu = st.radio("القائمة:", ["🏠 الركن الرياضي", "📊 الماكروز", "🤖 مستشار AI", "📸 الكاميرا"])
+    st.markdown("---")
+    menu = st.radio(
+        "انتقل بين الأقسام:",
+        ["🏠 الصفحة الرئيسية", "⚖️ حاسبة كتلة الجسم", "🥤 سجل شرب الماء", "📸 توثيق التقدم"]
+    )
+    st.write("---")
+    st.caption("تم التطوير بواسطة Rosie v2.0")
 
-# --- 3. إدارة البيانات ---
-if 'water' not in st.session_state: st.session_state.water = 0
-
-# --- 4. الصفحات ---
-if menu == "🏠 الركن الرياضي":
-    st.header("📅 تمارين اليوم")
-    day = st.selectbox("اختر اليوم:", ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"])
-    st.write(f"تمارين يوم {day} جاهزة لك!")
+# 3. منطق الصفحات
+if menu == "🏠 الصفحة الرئيسية":
+    st.header("👋 أهلاً بك في رحلتك الجديدة!")
+    st.write("هذا التطبيق مصمم خصيصاً لمساعدتك على مراقبة صحتك ولياقتك البدنية.")
     
-    st.subheader("🥤 عداد الماء")
-    st.write(f"الأكواب: {st.session_state.water}")
-    if st.button("اضافة كوب"):
-        st.session_state.water += 1
-        st.rerun()
+    # فيديو تحفيزي
+    st.subheader("📺 فيديو تمرين مقترح اليوم")
+    st.video("https://www.youtube.com/watch?v=2MoGxae-zyo")
+    
+    st.info("نصيحة اليوم: الاستمرارية أهم من السرعة. ابدأ بخطوات بسيطة!")
 
-elif menu == "📊 الماكروز":
-    st.header("📊 حاسبة الجسم")
-    w = st.number_input("الوزن (كجم):", value=70.0)
-    h = st.number_input("الطول (سم):", value=170.0)
-    if st.button("احسب"):
-        bmi = w / ((h/100)**2)
-        st.success(f"مؤشر كتلة جسمك هو: {bmi:.1f}")
+elif menu == "⚖️ حاسبة كتلة الجسم":
+    st.header("⚖️ احسب مؤشر كتلة جسمك (BMI)")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        weight = st.number_input("الوزن (كيلوجرام):", min_value=10.0, max_value=250.0, value=70.0)
+    with col2:
+        height = st.number_input("الطول (سنتيمتر):", min_value=50.0, max_value=250.0, value=170.0)
+    
+    if st.button("احسب الآن"):
+        bmi = weight / ((height/100)**2)
+        st.metric("مؤشر BMI الخاص بك هو:", f"{bmi:.1f}")
+        
+        if bmi < 18.5:
+            st.warning("تحتاج لزيادة الوزن بشكل صحي.")
+        elif 18.5 <= bmi < 25:
+            st.success("وزنك مثالي! حافظ على ذلك.")
+        else:
+            st.error("وزنك زائد قليلاً، ينصح باتباع حمية رياضية.")
 
-elif menu == "🤖 مستشار AI":
-    st.header("🤖 تحليل الروابط")
-    txt = st.text_area("ضع نص الخطة هنا:")
-    if txt:
-        links = re.findall(r'(https?://[^\s]+)', txt)
-        for l in links: st.video(l)
+elif menu == "🥤 سجل شرب الماء":
+    st.header("🥤 تتبع استهلاكك للماء")
+    
+    if 'water_cups' not in st.session_state:
+        st.session_state.water_cups = 0
+        
+    st.subheader(f"لقد شربت اليوم: {st.session_state.water_cups} أكواب")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("➕ إضافة كوب"):
+            st.session_state.water_cups += 1
+            st.rerun()
+    with col2:
+        if st.button("🔄 إعادة العداد للصفر"):
+            st.session_state.water_cups = 0
+            st.rerun()
+            
+    # شريط التقدم (الهدف 8 أكواب)
+    progress = min(st.session_state.water_cups / 8, 1.0)
+    st.progress(progress)
 
-elif menu == "📸 الكاميرا":
-    st.header("📸 التوثيق")
-    st.camera_input("التقط صورة")
+elif menu == "📸 توثيق التقدم":
+    st.header("📸 سجل صور يومياتك")
+    st.write("التقط صوراً لوجباتك أو للياقتك البدنية لمتابعة تقدمك.")
+    picture = st.camera_input("التقط صورة الآن")
+    
+    if picture:
+        st.image(picture, caption="تم التوثيق بنجاح! 💪")
 
-st.write("---")
-st.caption("Rosie Fitness 2026 | Powered by iPad M3")
+# 4. الفوتر (أسفل الصفحة)
+st.markdown("---")
+st.center = st.write("© 2026 Rosie Elite Fitness App")
