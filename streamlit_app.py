@@ -1,20 +1,3 @@
-with col_stats:
-        st.header("🥤 مراقب السوائل")
-        st.metric("أكواب الماء", f"{st.session_state.water_cups} / 12")
-        if st.button("➕ إضافة كوب ماء"):
-            st.session_state.water_cups += 1
-            st.rerun()
-        
-        st.write("---")
-        # رسم بياني للنشاط (Gauge Chart)
-        fig = go.Figure(go.Indicator(
-            mode = "gauge+number",
-            value = st.session_state.water_cups,
-            gauge = {'axis': {'range': [None, 12]}, 'bar': {'color': "#00d2ff"}},
-            title = {'text': "معدل شرب الماء اليوم"}
-        ))
-        st.plotly_chart(fig, use_container_width=True)
-
 elif menu == "📊 محلل الجسم والماكروز":
     st.header("📊 التحليل الذكي للكتلة والتغذية")
     c1, c2 = st.columns(2)
@@ -26,7 +9,6 @@ elif menu == "📊 محلل الجسم والماكروز":
         goal = st.selectbox("هدفك النهائي:", ["خسارة وزن (تنشيف)", "بناء عضل (تضخيم)", "محافظة"])
     
     if st.button("تحليل البيانات الآن"):
-        # حساب BMI
         height_m = h / 100
         bmi = w / (height_m ** 2)
         st.subheader(f"مؤشر كتلة جسمك (BMI): {bmi:.1f}")
@@ -52,7 +34,6 @@ elif menu == "🤖 مستشار الـ AI":
         st.markdown(ai_text)
         st.markdown("</div>", unsafe_allow_html=True)
         
-        # استخراج روابط يوتيوب
         links = re.findall(r'(https?://[^\s]+)', ai_text)
         found_yt = [l for l in links if "youtube" in l or "youtu.be" in l]
         
@@ -63,10 +44,8 @@ elif menu == "🤖 مستشار الـ AI":
 
 elif menu == "📸 التقدم والكاميرا":
     st.header("📸 سجل التقدم البصري")
-    st.warning("ملاحظة لمستخدمي iPad: الكاميرا الافتراضية قد تفتح الجهة الأمامية، يرجى تدوير الجهاز إذا لزم الأمر.")
-    cam_photo = st.camera_input("التقطي صورة لوجبتك أو لتقدم جسمك اليوم")
+    cam_photo = st.camera_input("التقطي صورة لوجبتك")
     if cam_photo:
         st.image(cam_photo, caption="تم التوثيق بنجاح! 🌟")
 
-# --- 5. الفوتر (Footer) ---
-st.markdown("<br><hr><center>Rosie Elite Fitness v2.0 | 2026 | Powered by iPad M3 Performance</center>", unsafe_allow_html=True)
+st.markdown("<br><hr><center>Rosie Elite Fitness v2.0 | 2026</center>", unsafe_allow_html=True)
